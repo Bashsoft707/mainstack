@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ProductController } from "../controller/products";
+import { ProductController } from "../controller/products.controller";
 
 export class ProductRoute {
   public router: Router;

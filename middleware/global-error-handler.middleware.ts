@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ErrorHandler } from "../utils/errorHandler";
+import { ErrorHandler } from "../utils/error-handler.utils";
 
 // Every request that throws an error will pass through this middleware
 // as long as the middleware is plugged into your application it will do its job

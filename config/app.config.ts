@@ -1,8 +1,8 @@
 import express, { Application } from "express"
 import dotenv from "dotenv"
-import connectDB from "./db";
-import { ProductRoute } from "../routes/products";
-import { globalErrorHandler } from "../middleware/globalErrorHandler";
+import connectDB from "./db.config";
+import { ProductRoute } from "../routes/product.routes";
+import { globalErrorHandler } from "../middleware/global-error-handler.middleware";
 
 // Load environment variables
 dotenv.config();

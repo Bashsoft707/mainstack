@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { ApiError } from "./apiError";
-import { responseStatusCodes } from "./types";
+import { ApiError } from "./api-error.utils";
+import { IResponseStatusCodes } from "../interfaces/response.interface";
 
 export class ErrorHandler {
   private isTrustedError(error: Error | ApiError) {
@@ -25,11 +25,11 @@ export class ErrorHandler {
   private handleCriticalError(error: Error, res?: Response) {
     console.log(error);
     if (res) {
-      res.status(responseStatusCodes.BAD_REQUEST).json({
+      res.status(IResponseStatusCodes.BAD_REQUEST).json({
         STATUS: "FAILURE",
         MESSAGE: { name: error.name, message: error.message },
       });
-      res.status(responseStatusCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(IResponseStatusCodes.INTERNAL_SERVER_ERROR).json({
         STATUS: "FAILURE",
         MESSAGE: "Internal Server Error",
       });

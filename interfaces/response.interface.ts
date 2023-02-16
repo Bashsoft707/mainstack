@@ -1,4 +1,4 @@
-export enum responseStatusCodes {
+export enum IResponseStatusCodes {
   SUCCESS = 200,
   CREATED = 201,
   NO_CONTENT = 204,
@@ -10,16 +10,4 @@ export enum responseStatusCodes {
   UNPROCESSABLE = 422,
   INTERNAL_SERVER_ERROR = 500,
   NOT_IMPLEMENTED = 501,
-}
-
-export interface IApiErrorArguments {
-  message: string;
-  name?: string;
-  statusCode: responseStatusCodes;
-  isOperational?: boolean;
-}
-
-export interface IProduct {
-  name: string;
-  
 }

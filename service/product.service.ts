@@ -1,24 +1,25 @@
-import { Product } from "../model/Product";
-import { ApiError } from "../utils/apiError";
-import { responseStatusCodes } from "../utils/types";
+import { CreateProductDto } from "../dto/create-product.dto";
+import { IResponseStatusCodes } from "../interfaces/response.interface";
+import { Product } from "../model/product.model";
+import { ApiError } from "../utils/api-error.utils";
 
 export class ProductService {
   constructor() {}
 
-  public async createProduct(data: any) {
-    const { name, description, amount } = data;
+  public async createProduct(data: CreateProductDto) {
+    const { name, description, price } = data;
 
-    if (!name || !description || !amount) {
+    if (!name || !description || !price) {
       throw new ApiError({
         message: "Missing required parameters",
-        statusCode: responseStatusCodes.BAD_REQUEST,
+        statusCode: IResponseStatusCodes.BAD_REQUEST,
       });
     }
 
     const product = await Product.create({
       name,
       description,
-      amount,
+      price,
     });
 
     return product;
@@ -42,14 +43,14 @@ export class ProductService {
     if (!product) {
       throw new ApiError({
         message: `Product with id ${id} not found`,
-        statusCode: responseStatusCodes.NOT_FOUND,
+        statusCode: IResponseStatusCodes.NOT_FOUND,
       });
     }
 
     return product;
   }
 
-  async updateProduct(id: string, data: any) {
+  async updateProduct(id: string, data: Partial<CreateProductDto>) {
     await this.getProduct(id);
 
     const product = await Product.findByIdAndUpdate(id, data, { new: true });

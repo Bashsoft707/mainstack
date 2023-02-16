@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import { model, Schema, Document } from 'mongoose';
+import { IProduct } from '../interfaces/product.interface';
 
-const ProductSchema = new mongoose.Schema(
+const ProductSchema: Schema = new Schema(
   {
     name: {
       type: String,
@@ -10,7 +11,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    amount: {
+    price: {
       type: Number,
       required: true,
     },
@@ -18,4 +19,4 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true, strictQuery: true, strict: true }
 );
 
-export const Product = mongoose.model("Product", ProductSchema);
+export const Product = model<IProduct & Document>("Product", ProductSchema);
