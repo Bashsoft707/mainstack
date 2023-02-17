@@ -20,7 +20,7 @@ export class ProductRoute {
     this.router
       .route("/:id")
       .get(this.productController.getProduct)
-      .patch(this.productController.updateProduct)
+      .patch(upload.single("imageUrl"), this.productController.updateProduct)
       .delete(this.productController.deleteProduct);
   }
 }

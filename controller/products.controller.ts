@@ -42,7 +42,8 @@ export class ProductController {
     try {
       const product = await this.productService.updateProduct(
         req.params.id,
-        req.body
+        req.body,
+        req.file
       );
       return res.status(200).json({ success: true, product });
     } catch (error) {

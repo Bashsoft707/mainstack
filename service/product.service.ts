@@ -12,7 +12,7 @@ export class ProductService {
     file: Express.Multer.File | undefined
   ) {
     try {
-      const { name, description, price, imageUrl } = data;
+      const { name, description, price } = data;
 
       const upload = await cloudinary.uploader.upload(file?.path, {
         folder: "mission",
@@ -69,11 +69,35 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: string, data: Partial<CreateProductDto>) {
+  async updateProduct(
+    id: string,
+    data: Partial<CreateProductDto>,
+    file: Express.Multer.File | undefined
+  ) {
     try {
-      await this.getProduct(id);
+      const product = await this.getProduct(id);
 
-      const product = await Product.findByIdAndUpdate(id, data, { new: true });
+      await cloudinary.uploader.destroy(product?.cloudinaryId);
+
+      let uploadResult;
+      if (file) {
+        uploadResult = await cloudinary.uploader.upload(file?.path, {
+          folder: "mission",
+          use_filename: true,
+        });
+      }
+
+      await Product.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            ...data,
+            // imageUrl: uploadResult.secure_url,
+            // cloudinaryId: uploadResult.public_id,
+          },
+        },
+        { new: true }
+      );
 
       return product;
     } catch (err) {
