@@ -4,7 +4,7 @@ import { upload } from "../utils/upload.utils";
 
 export class ProductRoute {
   public router: Router;
-  private productController: ProductController = new ProductController();
+  public productController: ProductController = new ProductController();
 
   constructor() {
     this.router = Router();

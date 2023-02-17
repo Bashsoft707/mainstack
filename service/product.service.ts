@@ -5,6 +5,7 @@ import { ApiError } from "../utils/api-error.utils";
 import cloudinary from "../utils/cloudinary.utils";
 
 export class ProductService {
+  public products = Product;
   constructor() {}
 
   public async createProduct(
@@ -25,7 +26,7 @@ export class ProductService {
       use_filename: true,
     });
 
-    const product = await Product.create({
+    const product = await this.products.create({
       name,
       description,
       price,
@@ -37,8 +38,8 @@ export class ProductService {
   }
 
   async queryProducts(limit: number, skip: number) {
-    const products = await Product.find({})
-      .sort({ id: -1 })
+    const products = await this.products
+      .find({})
       .skip(skip)
       .limit(limit);
 
@@ -47,7 +48,7 @@ export class ProductService {
 
   async getProduct(id: string) {
     try {
-      const product = await Product.findById(id);
+      const product = await this.products.findById(id);
 
       if (!product) {
         throw new ApiError({
@@ -85,7 +86,7 @@ export class ProductService {
         });
       }
 
-      await Product.findByIdAndUpdate(id, {
+      await this.products.findByIdAndUpdate(id, {
         $set: {
           ...data,
           imageUrl: uploadResult.secure_url,
@@ -93,7 +94,7 @@ export class ProductService {
         },
       });
 
-      return { product, uploadResult };
+      return product;
     } catch (err) {
       if (err instanceof Error) {
         throw new ApiError({
@@ -108,7 +109,7 @@ export class ProductService {
     try {
       await this.getProduct(id);
 
-      await Product.findByIdAndDelete(id);
+      await this.products.findByIdAndDelete(id);
     } catch (err) {
       if (err instanceof Error) {
         throw new ApiError({

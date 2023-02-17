@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { ProductService } from "../service/product.service";
 
 export class ProductController {
-  private productService: ProductService = new ProductService();
+  public productService: ProductService = new ProductService();
   constructor() {}
 
   public createProduct: RequestHandler = async (req, res, next) => {

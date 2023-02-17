@@ -29,11 +29,6 @@ export class ErrorHandler {
         STATUS: "FAILURE",
         MESSAGE: { name: error.name, message: error.message },
       });
-      res.status(IResponseStatusCodes.INTERNAL_SERVER_ERROR).json({
-        STATUS: "FAILURE",
-        MESSAGE: "Internal Server Error",
-      });
-      process.exit(1);
     }
   }
 }
