@@ -101,5 +101,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
+    "outDir": "./dist"
   }
 }
