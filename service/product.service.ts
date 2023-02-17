@@ -11,31 +11,29 @@ export class ProductService {
     data: CreateProductDto,
     file: Express.Multer.File | undefined
   ) {
-    try {
-      const { name, description, price } = data;
+    const { name, description, price } = data;
 
-      const upload = await cloudinary.uploader.upload(file?.path, {
-        folder: "mission",
-        use_filename: true,
+    if (!name || !description || !price || !file) {
+      throw new ApiError({
+        message: "Missing paramneter",
+        statusCode: IResponseStatusCodes.BAD_REQUEST,
       });
-
-      const product = await Product.create({
-        name,
-        description,
-        price,
-        imageUrl: upload.secure_url,
-        cloudinaryId: upload.public_id,
-      });
-
-      return product;
-    } catch (err) {
-      if (err instanceof Error) {
-        throw new ApiError({
-          message: err.message,
-          statusCode: IResponseStatusCodes.BAD_REQUEST,
-        });
-      }
     }
+
+    const upload = await cloudinary.uploader.upload(file?.path, {
+      folder: "products",
+      use_filename: true,
+    });
+
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      imageUrl: upload.secure_url,
+      cloudinaryId: upload.public_id,
+    });
+
+    return product;
   }
 
   async queryProducts(limit: number, skip: number) {
@@ -87,19 +85,15 @@ export class ProductService {
         });
       }
 
-      await Product.findByIdAndUpdate(
-        id,
-        {
-          $set: {
-            ...data,
-            // imageUrl: uploadResult.secure_url,
-            // cloudinaryId: uploadResult.public_id,
-          },
+      await Product.findByIdAndUpdate(id, {
+        $set: {
+          ...data,
+          imageUrl: uploadResult.secure_url,
+          cloudinaryId: uploadResult.public_id,
         },
-        { new: true }
-      );
+      });
 
-      return product;
+      return { product, uploadResult };
     } catch (err) {
       if (err instanceof Error) {
         throw new ApiError({

@@ -7,11 +7,14 @@ export class ProductController {
 
   public createProduct: RequestHandler = async (req, res, next) => {
     try {
-      const product = await this.productService.createProduct(req.body, req.file);
+      const product = await this.productService.createProduct(
+      req.body,
+      req.file
+    );
 
-      return res.status(201).json({ success: true, product });
-    } catch (error) {
-      next(error);
+    return res.status(201).json({ success: true, product });
+    } catch (err) {
+      next(err)
     }
   };
 
@@ -27,7 +30,7 @@ export class ProductController {
     } catch (error) {
       next(error);
     }
-  }; 
+  };
 
   getProduct: RequestHandler = async (req, res, next) => {
     try {
