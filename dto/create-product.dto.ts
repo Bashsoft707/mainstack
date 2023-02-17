@@ -12,4 +12,11 @@ export class CreateProductDto {
   @IsNumber()
   @IsNotEmpty()
   price: number;
+
+  @IsNotEmpty()
+  @IsString()
+  imageUrl: string;
+
+  // Cloudinary id to track image in cloudinary database
+  cloudinaryId: string;
 }

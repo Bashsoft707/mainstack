@@ -7,7 +7,7 @@ export class ProductController {
 
   public createProduct: RequestHandler = async (req, res, next) => {
     try {
-      const product = await this.productService.createProduct(req.body);
+      const product = await this.productService.createProduct(req.body, req.file);
 
       return res.status(201).json({ success: true, product });
     } catch (error) {
@@ -17,8 +17,9 @@ export class ProductController {
 
   getProducts: RequestHandler = async (req, res, next) => {
     try {
-      const page = parseInt(req.query.page as string);
-      const products = await this.productService.queryProducts(page);
+      const limit = parseInt(req.query.limit as string);
+      const skip = parseInt(req.query.skip as string);
+      const products = await this.productService.queryProducts(limit, skip);
 
       return res
         .status(200)

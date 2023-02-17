@@ -2,65 +2,102 @@ import { CreateProductDto } from "../dto/create-product.dto";
 import { IResponseStatusCodes } from "../interfaces/response.interface";
 import { Product } from "../model/product.model";
 import { ApiError } from "../utils/api-error.utils";
+import cloudinary from "../utils/cloudinary.utils";
 
 export class ProductService {
   constructor() {}
 
-  public async createProduct(data: CreateProductDto) {
-    const { name, description, price } = data;
+  public async createProduct(
+    data: CreateProductDto,
+    file: Express.Multer.File | undefined
+  ) {
+    try {
+      const { name, description, price, imageUrl } = data;
 
-    if (!name || !description || !price) {
-      throw new ApiError({
-        message: "Missing required parameters",
-        statusCode: IResponseStatusCodes.BAD_REQUEST,
+      const upload = await cloudinary.uploader.upload(file?.path, {
+        folder: "mission",
+        use_filename: true,
       });
+
+      const product = await Product.create({
+        name,
+        description,
+        price,
+        imageUrl: upload.secure_url,
+        cloudinaryId: upload.public_id,
+      });
+
+      return product;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new ApiError({
+          message: err.message,
+          statusCode: IResponseStatusCodes.BAD_REQUEST,
+        });
+      }
     }
-
-    const product = await Product.create({
-      name,
-      description,
-      price,
-    });
-
-    return product;
   }
 
-  async queryProducts(page: number) {
-    const pageSize = 10;
-    const skip = (page - 1) * pageSize;
-
+  async queryProducts(limit: number, skip: number) {
     const products = await Product.find({})
-      .sort({ _id: -1 })
+      .sort({ id: -1 })
       .skip(skip)
-      .limit(pageSize);
+      .limit(limit);
 
     return products;
   }
 
   async getProduct(id: string) {
-    const product = await Product.findById(id);
+    try {
+      const product = await Product.findById(id);
 
-    if (!product) {
-      throw new ApiError({
-        message: `Product with id ${id} not found`,
-        statusCode: IResponseStatusCodes.NOT_FOUND,
-      });
+      if (!product) {
+        throw new ApiError({
+          message: `Product with id ${id} not found`,
+          statusCode: IResponseStatusCodes.NOT_FOUND,
+        });
+      }
+
+      return product;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new ApiError({
+          message: err.message,
+          statusCode: IResponseStatusCodes.BAD_REQUEST,
+        });
+      }
     }
-
-    return product;
   }
 
   async updateProduct(id: string, data: Partial<CreateProductDto>) {
-    await this.getProduct(id);
+    try {
+      await this.getProduct(id);
 
-    const product = await Product.findByIdAndUpdate(id, data, { new: true });
+      const product = await Product.findByIdAndUpdate(id, data, { new: true });
 
-    return product;
+      return product;
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new ApiError({
+          message: err.message,
+          statusCode: IResponseStatusCodes.BAD_REQUEST,
+        });
+      }
+    }
   }
 
   async deleteProduct(id: string) {
-    await this.getProduct(id);
+    try {
+      await this.getProduct(id);
 
-    await Product.findByIdAndDelete(id);
+      await Product.findByIdAndDelete(id);
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new ApiError({
+          message: err.message,
+          statusCode: IResponseStatusCodes.BAD_REQUEST,
+        });
+      }
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ProductController } from "../controller/products.controller";
+import { upload } from "../utils/upload.utils";
 
 export class ProductRoute {
   public router: Router;
@@ -14,7 +15,7 @@ export class ProductRoute {
     this.router
       .route("/")
       .get(this.productController.getProducts)
-      .post(this.productController.createProduct);
+      .post(upload.single("imageUrl"), this.productController.createProduct);
       
     this.router
       .route("/:id")
